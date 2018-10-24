@@ -1,0 +1,113 @@
+{
+  "project_info": {
+    "project_number": "595483531566",
+    "firebase_url": "https://github-projects-65760.firebaseio.com",
+    "project_id": "github-projects-65760",
+    "storage_bucket": "github-projects-65760.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595483531566:android:d1faa79aa2e0d9b6",
+        "android_client_info": {
+          "package_name": "com.danielkioko.podplay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "595483531566-uljvt6b7eo2tf9ird3226bud1sqaof11.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danielkioko.podplay",
+            "certificate_hash": "5fbce72992cb44938a0a40b961f4419c8e2303aa"
+          }
+        },
+        {
+          "client_id": "595483531566-o06r2hjr896qvtmfnpn3nss5djan9g7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2F3AaHKejwu4tgLK-hZUgWjpU88DG4tE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "595483531566-o06r2hjr896qvtmfnpn3nss5djan9g7b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "595483531566-rcvi6bjo2dpu6iq3cf8knmmm5cmgmlvj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "danielnzioka.PodPlay"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595483531566:android:f3bce99d77e1d30d",
+        "android_client_info": {
+          "package_name": "com.danielkioko.shopr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "595483531566-ijlepap74eeusaaddc38h29v79q123bq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danielkioko.shopr",
+            "certificate_hash": "5fbce72992cb44938a0a40b961f4419c8e2303aa"
+          }
+        },
+        {
+          "client_id": "595483531566-o06r2hjr896qvtmfnpn3nss5djan9g7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2F3AaHKejwu4tgLK-hZUgWjpU88DG4tE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "595483531566-o06r2hjr896qvtmfnpn3nss5djan9g7b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "595483531566-rcvi6bjo2dpu6iq3cf8knmmm5cmgmlvj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "danielnzioka.PodPlay"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
