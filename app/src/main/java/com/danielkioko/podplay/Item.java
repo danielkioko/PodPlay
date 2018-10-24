@@ -1,12 +1,14 @@
+package com.danielkioko.podplay;
+
 public class Item {
 
     public Item() {
     }
 
-    String label;
-    int cover, audio;
+    String label, cover;
+    int audio;
 
-    public Item (int cover, String label, int audio) {
+    public Item (String cover, String label, int audio) {
 
     this.cover = cover;
     this.label = label;
@@ -14,13 +16,9 @@ public class Item {
 
     }
 
-    public int getCover() {
-        return cover;
-    }
+    public String getCover() { return cover; }
 
-    public void setCover(int cover) {
-        this.cover = cover;
-    }
+    public void setCover(String cover) { this.cover = cover; }
 
     public String getLabel() {
         return label;
