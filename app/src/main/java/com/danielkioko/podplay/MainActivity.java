@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,14 +60,25 @@ public class MainActivity extends AppCompatActivity {
                 databaseReference
         ) {
             @Override
-            protected void populateViewHolder(final ItemViewHolder viewHolder, final Item model, int position) {
+            protected void populateViewHolder(final ItemViewHolder viewHolder, final Item model, final int position) {
 
                 databaseReference.child("").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                        final String audioID = getRef(position).getKey().toString();
+
                         viewHolder.setCover(MainActivity.this, model.getCover());
                         viewHolder.setLabel(model.getLabel());
+
+                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(MainActivity.this, AudioPlayerActivity.class);
+                                intent.putExtra("PostID", audioID);
+                                startActivity(intent);
+                            }
+                        });
 
                     }
 

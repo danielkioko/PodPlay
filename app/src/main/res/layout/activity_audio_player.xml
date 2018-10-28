@@ -15,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/fabPlay"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,57 +25,36 @@
         android:id="@+id/fabPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@android:drawable/ic_media_play"
-        tools:layout_editor_absoluteX="155dp" />
+        app:layout_constraintEnd_toStartOf="@+id/fabPause"
+        app:srcCompat="@android:drawable/ic_media_play" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabRewind"
+        android:id="@+id/fabPause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fabPlay"
-        app:srcCompat="@android:drawable/ic_media_rew" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabPause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fabPlay"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_media_pause" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabForward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fabPause"
-        app:srcCompat="@android:drawable/ic_media_ff" />
-
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/audioLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorPrimary"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
         android:text="Podcast Title"
         android:textColor="@android:color/background_light"
         android:textSize="24sp"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
         app:layout_constraintBottom_toBottomOf="@+id/cover"
         app:layout_constraintStart_toStartOf="@+id/cover" />
 
