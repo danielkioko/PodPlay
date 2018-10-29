@@ -44,7 +44,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         }
 
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("allAudio");
 
         audioID = getIntent().getExtras().getString("audioID");
 
@@ -55,8 +55,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                String cover = (String) dataSnapshot.child("coverImage").getValue();
-                String label = (String) dataSnapshot.child("textLabel").getValue();
+                String cover = (String) dataSnapshot.child("cover").getValue();
+                String label = (String) dataSnapshot.child("label").getValue();
                 int audio = (int) dataSnapshot.child("audio").getValue();
 
                 theLabel.setText(label);

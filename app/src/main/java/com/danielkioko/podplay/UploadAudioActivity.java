@@ -1,5 +1,6 @@
 package com.danielkioko.podplay;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -36,11 +37,11 @@ public class UploadAudioActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 2;
     private Uri uri = null;
+    private Uri audioUri = null;
 
     ImageView cover;
     TextView label;
     Button newAudio, btnUpload;
-    int audio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +54,9 @@ public class UploadAudioActivity extends AppCompatActivity {
         label = findViewById(R.id.etLabel);
         btnUpload = findViewById(R.id.uploadFiles);
 
-        databaseReference = firebaseDatabase.getReference().child("Podcasts");
+        databaseReference = firebaseDatabase.getReference().child("allAudio");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        dbUsers = FirebaseDatabase.getInstance().getReference().child("").child(currentUser.getUid());
+        dbUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
 
         newAudio = findViewById(R.id.btnSelectAudio);
         newAudio.setOnClickListener(new View.OnClickListener() {
@@ -86,31 +86,33 @@ public class UploadAudioActivity extends AppCompatActivity {
 
                 if (!newLabel.isEmpty()) {
 
-                    StorageReference storageReference = storage.getReference().child("");
-                    storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    final StorageReference storageReference = storage.getReference().child("allAudio");
+                    storageReference.putFile(audioUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            final Uri downloadUrl = uri;
+                            storageReference.putFile(uri);
+
+                            final Uri downloadUrl = audioUri;
+                            final Uri imageUrl = uri;
                             final DatabaseReference newPodcast = databaseReference.push();
 
                             dbUsers.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                    newPodcast.child("cover").setValue(downloadUrl.toString());
+                                    newPodcast.child("cover").setValue(imageUrl.toString());
+                                    newPodcast.child("audio").setValue(downloadUrl.toString());
                                     newPodcast.child("label").setValue(newLabel);
                                     newPodcast.child("uid").setValue(currentUser.getUid());
 
                                     Intent intent = new Intent(UploadAudioActivity.this, MainActivity.class);
                                     startActivity(intent);
 
-
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                                 }
                             });
 
@@ -138,9 +140,7 @@ public class UploadAudioActivity extends AppCompatActivity {
         if(requestCode == 1){
 
             if(resultCode == RESULT_OK){
-
-                //the selected audio.
-                Uri uri = data.getData();
+                audioUri = data.getData();
             }
         }
     }

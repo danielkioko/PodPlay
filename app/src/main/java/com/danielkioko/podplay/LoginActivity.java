@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -20,11 +21,14 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
 
     FirebaseAuth firebaseAuth;
+    FirebaseAuth.AuthStateListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
 
         email = findViewById(R.id.etEmail);
@@ -39,13 +43,7 @@ public class LoginActivity extends AppCompatActivity {
                 String strPassword = password.getText().toString();
 
                 if (!strEmail.isEmpty() && !strPassword.isEmpty()) {
-                    firebaseAuth.signInWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        }
-                    });
+                    signIn(strEmail, strPassword);
                 } else {
                     Snackbar.make(view, "Fill In All The Fields!", 15).show();
                 }
@@ -53,5 +51,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void signIn(String strEmail, String strPassword) {
+        firebaseAuth.signInWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Intent toClass = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(toClass);
+                    toClass.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    toClass.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                } else {
+                    Toast.makeText(LoginActivity.this, "Error: " + task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }
