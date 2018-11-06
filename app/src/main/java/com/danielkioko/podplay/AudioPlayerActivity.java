@@ -48,7 +48,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
         audioID = getIntent().getExtras().getString("audioID");
 
-        coverImage = findViewById(R.id.cover);
+//        coverImage = findViewById(R.id.cover);
         theLabel = findViewById(R.id.audioLabel);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -60,7 +60,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
                 int audio = (int) dataSnapshot.child("audio").getValue();
 
                 theLabel.setText(label);
-                Picasso.with(AudioPlayerActivity.this).load(cover).into(coverImage);
+//                Picasso.with(AudioPlayerActivity.this).load(cover).into(coverImage);
                 final MediaPlayer mp = MediaPlayer.create(AudioPlayerActivity.this, audio);
                 ///AUDIO REFERENCE
 

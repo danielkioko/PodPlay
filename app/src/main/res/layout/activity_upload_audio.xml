@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".UploadAudioActivity">
 
-    <ImageView
-        android:id="@+id/imgSelectCover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectAudio"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
-
     <EditText
         android:id="@+id/etLabel"
         android:layout_width="wrap_content"
@@ -26,7 +16,7 @@
         android:inputType="textPersonName"
         android:text="Label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgSelectCover" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSelectAudio" />
 
     <Button
         android:id="@+id/btnSelectAudio"

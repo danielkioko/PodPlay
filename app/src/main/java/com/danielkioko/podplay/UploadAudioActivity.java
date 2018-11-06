@@ -1,5 +1,7 @@
 package com.danielkioko.podplay;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,10 +13,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,23 +30,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.UUID;
 
 public class UploadAudioActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
+
     FirebaseStorage storage;
+    StorageReference storageReference;
+
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     DatabaseReference dbUsers;
     FirebaseUser currentUser;
 
     private static final int GALLERY_REQUEST_CODE = 2;
-    private Uri uri = null;
-    private Uri audioUri = null;
+    private Uri audioUri;
 
-    ImageView cover;
+    //ImageView cover;
     TextView label;
     Button newAudio, btnUpload;
 
@@ -50,12 +63,16 @@ public class UploadAudioActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        cover = findViewById(R.id.imgSelectCover);
+//        cover = findViewById(R.id.imgSelectCover);
         label = findViewById(R.id.etLabel);
         btnUpload = findViewById(R.id.uploadFiles);
 
-        databaseReference = firebaseDatabase.getReference().child("allAudio");
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("allAudio");
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
         dbUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
 
         newAudio = findViewById(R.id.btnSelectAudio);
@@ -69,76 +86,62 @@ public class UploadAudioActivity extends AppCompatActivity {
             }
         });
 
-        cover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
-            }
-        });
-
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                final String newLabel = label.getText().toString().trim();
+                if (audioUri != null) {
 
-                if (!newLabel.isEmpty()) {
+                    StorageMetadata metadata = new StorageMetadata.Builder()
+                            .setContentType("audio/mpeg")
+                            .build();
 
-                    final StorageReference storageReference = storage.getReference().child("allAudio");
-                    storageReference.putFile(audioUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    final ProgressDialog progressDialog = new ProgressDialog(UploadAudioActivity.this);
+                    progressDialog.setTitle("Uploading...");
+                    progressDialog.show();
 
-                            storageReference.putFile(uri);
-
-                            final Uri downloadUrl = audioUri;
-                            final Uri imageUrl = uri;
-                            final DatabaseReference newPodcast = databaseReference.push();
-
-                            dbUsers.addValueEventListener(new ValueEventListener() {
+                    StorageReference ref = storageReference.child("audioFiles/"+UUID.randomUUID().toString());
+                    ref.putFile(audioUri,metadata)
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                    newPodcast.child("cover").setValue(imageUrl.toString());
-                                    newPodcast.child("audio").setValue(downloadUrl.toString());
-                                    newPodcast.child("label").setValue(newLabel);
-                                    newPodcast.child("uid").setValue(currentUser.getUid());
-
-                                    Intent intent = new Intent(UploadAudioActivity.this, MainActivity.class);
-                                    startActivity(intent);
-
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(UploadAudioActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
                                 }
+                            })
 
+                            .addOnFailureListener(new OnFailureListener() {
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(UploadAudioActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            })
+
+                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                            .getTotalByteCount());
+                                    progressDialog.setMessage("Uploaded "+(int)progress+"%");
                                 }
                             });
 
-
-                        }
-                    });
-
-                } else {
-                    Snackbar.make(view, "Error!", 10).show();
+                } else  {
+                    Toast.makeText(getApplicationContext(), "Choose A File First", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
-
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK){
-            uri = data.getData();
-            cover.setImageURI(uri);
-        }
+//        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK){
+//            uri = data.getData();
+//            cover.setImageURI(uri);
+//        }
         if(requestCode == 1){
-
             if(resultCode == RESULT_OK){
                 audioUri = data.getData();
             }

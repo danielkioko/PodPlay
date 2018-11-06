@@ -1,6 +1,7 @@
 package com.danielkioko.podplay;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
-    FirebaseAuth.AuthStateListener listener;
 
     FloatingActionButton floatingActionButton;
 

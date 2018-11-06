@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
 
     FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
     FirebaseAuth.AuthStateListener listener;
 
     @Override
@@ -30,6 +32,29 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        if (firebaseUser == null) {
+
+        } else {
+            Intent toClass = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(toClass);
+//                    toClass.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    toClass.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+
+//        firebaseAuth.addAuthStateListener(listener);
+//        listener = new FirebaseAuth.AuthStateListener(){
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                if (firebaseAuth.getCurrentUser()==null){
+//                    Toast.makeText(getApplicationContext(), "Please Login To Continue", Toast.LENGTH_LONG).show();
+//                } else {
+//                    Intent toClass = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(toClass);
+//                    toClass.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    toClass.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                }
+//            }
+//        };
 
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
@@ -48,6 +73,32 @@ public class LoginActivity extends AppCompatActivity {
                     Snackbar.make(view, "Fill In All The Fields!", 15).show();
                 }
 
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loginDirect();
+    }
+
+    private void loginDirect() {
+        String defaultEmail = "new@new.com";
+        String defaultPassword = "password";
+
+        firebaseAuth.signInWithEmailAndPassword(defaultEmail, defaultPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Intent toClass = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(toClass);
+                    toClass.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    toClass.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                } else {
+                    Toast.makeText(LoginActivity.this, "Error: " + task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
 
