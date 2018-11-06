@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager.isSmoothScrollbarEnabled();
         recyclerView.setLayoutManager(mLayoutManager);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("allAudio");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Audio");
         firebaseAuth = FirebaseAuth.getInstance();
 
         floatingActionButton = findViewById(R.id.addNew);

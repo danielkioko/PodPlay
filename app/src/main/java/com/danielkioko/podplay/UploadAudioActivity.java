@@ -35,19 +35,21 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.UUID;
 
 public class UploadAudioActivity extends AppCompatActivity {
+
+    private DatabaseReference databaseRef;
+    private DatabaseReference mDatabaseUsers;
+    private FirebaseUser mCurrentUser;
+    private FirebaseAuth mAuth;
 
     FirebaseAuth firebaseAuth;
 
     FirebaseStorage storage;
     StorageReference storageReference;
-
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    DatabaseReference dbUsers;
-    FirebaseUser currentUser;
 
     private static final int GALLERY_REQUEST_CODE = 2;
     private Uri audioUri;
@@ -70,10 +72,10 @@ public class UploadAudioActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("allAudio");
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
-        dbUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
+        databaseRef = FirebaseDatabase.getInstance().getReference().child("Audio");
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
 
         newAudio = findViewById(R.id.btnSelectAudio);
         newAudio.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +94,7 @@ public class UploadAudioActivity extends AppCompatActivity {
 
                 if (audioUri != null) {
 
-                    StorageMetadata metadata = new StorageMetadata.Builder()
+                    final StorageMetadata metadata = new StorageMetadata.Builder()
                             .setContentType("audio/mpeg")
                             .build();
 
@@ -100,12 +102,27 @@ public class UploadAudioActivity extends AppCompatActivity {
                     progressDialog.setTitle("Uploading...");
                     progressDialog.show();
 
-                    StorageReference ref = storageReference.child("audioFiles/"+UUID.randomUUID().toString());
+                    final DatabaseReference newAudio = databaseRef.push();
+
+                    final StorageReference ref = storageReference.child("audioFiles/"+UUID.randomUUID().toString());
                     ref.putFile(audioUri,metadata)
                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     progressDialog.dismiss();
+
+                                    mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            String url = ref.getDownloadUrl().toString();
+                                            newAudio.child("file").setValue(url);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        }
+                                    });
+
                                     Toast.makeText(UploadAudioActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
                                 }
                             })
