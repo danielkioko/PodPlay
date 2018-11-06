@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,10 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-
     DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
-
     FloatingActionButton floatingActionButton;
 
     @Override
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         mLayoutManager.isSmoothScrollbarEnabled();
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(mLayoutManager);
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Audio");
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void populateViewHolder(ItemViewHolder viewHolder, Item model, int position) {
                 final String post_key = getRef(position).getKey().toString();
-
                 viewHolder.setLabel(model.getLabel());
                 viewHolder.setCover(MainActivity.this, model.getCover());
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {

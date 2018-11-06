@@ -93,7 +93,6 @@ public class UploadAudioActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (audioUri != null) {
-
                     final StorageMetadata metadata = new StorageMetadata.Builder()
                             .setContentType("audio/mpeg")
                             .build();
@@ -103,37 +102,37 @@ public class UploadAudioActivity extends AppCompatActivity {
                     progressDialog.show();
 
                     final DatabaseReference newAudio = databaseRef.push();
-
                     final StorageReference ref = storageReference.child("audioFiles/"+UUID.randomUUID().toString());
+
                     ref.putFile(audioUri,metadata)
                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
                                     progressDialog.dismiss();
-
-                                    mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            String url = ref.getDownloadUrl().toString();
-                                            newAudio.child("file").setValue(url);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        public void onSuccess(Uri uri) {
+                                            final Uri url = uri;
+                                            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    newAudio.child("audioLink").setValue(url);
+                                                }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                }
+                                            });
                                         }
                                     });
-
                                     Toast.makeText(UploadAudioActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
                                 }
                             })
-
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(UploadAudioActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             })
-
                             .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
@@ -142,22 +141,16 @@ public class UploadAudioActivity extends AppCompatActivity {
                                     progressDialog.setMessage("Uploaded "+(int)progress+"%");
                                 }
                             });
-
                 } else  {
                     Toast.makeText(getApplicationContext(), "Choose A File First", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK){
-//            uri = data.getData();
-//            cover.setImageURI(uri);
-//        }
         if(requestCode == 1){
             if(resultCode == RESULT_OK){
                 audioUri = data.getData();
