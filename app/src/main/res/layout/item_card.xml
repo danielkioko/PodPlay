@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="@+id/tvUserame"
         app:layout_constraintTop_toBottomOf="@+id/tvUserame" />
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,6 +37,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="32dp"
         android:layout_marginTop="10dp"
+        app:riv_corner_radius="10dp"
         app:layout_constraintStart_toEndOf="@+id/label"
         app:layout_constraintTop_toTopOf="@+id/tvUserame"
         app:srcCompat="@android:drawable/ic_media_play" />

@@ -51,10 +51,12 @@ public class UploadAudioActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
 
+    private Uri imgUri = null;
+
     private static final int GALLERY_REQUEST_CODE = 2;
     private Uri audioUri;
 
-    //ImageView cover;
+    ImageView cover;
     TextView label;
     Button newAudio, btnUpload;
 
@@ -65,7 +67,7 @@ public class UploadAudioActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-//        cover = findViewById(R.id.imgSelectCover);
+        cover = findViewById(R.id.imgSelectCover);
         label = findViewById(R.id.etLabel);
         btnUpload = findViewById(R.id.uploadFiles);
 
@@ -76,6 +78,16 @@ public class UploadAudioActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
+
+        cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
 
         newAudio = findViewById(R.id.btnSelectAudio);
         newAudio.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +104,7 @@ public class UploadAudioActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (audioUri != null) {
+                if (audioUri != null && imgUri != null) {
                     final StorageMetadata metadata = new StorageMetadata.Builder()
                             .setContentType("audio/mpeg")
                             .build();
@@ -102,7 +114,25 @@ public class UploadAudioActivity extends AppCompatActivity {
                     progressDialog.show();
 
                     final DatabaseReference newAudio = databaseRef.push();
-                    final StorageReference ref = storageReference.child("audioFiles/"+UUID.randomUUID().toString());
+                    final StorageReference ref = storageReference.child(label+"/audioFiles/"+UUID.randomUUID().toString());
+
+                    ref.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    final Uri uri1 = uri;
+                                    mDatabaseUsers.child("audioCover").setValue(uri1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(getApplicationContext(), "Cover Uploaded", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
 
                     ref.putFile(audioUri,metadata)
                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -116,7 +146,12 @@ public class UploadAudioActivity extends AppCompatActivity {
                                             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    newAudio.child("audioLink").setValue(url);
+                                                    newAudio.child("audioLink").setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Toast.makeText(getApplicationContext(), "Audio Uploaded", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
                                                 }
                                                 @Override
                                                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -124,7 +159,7 @@ public class UploadAudioActivity extends AppCompatActivity {
                                             });
                                         }
                                     });
-                                    Toast.makeText(UploadAudioActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(UploadAudioActivity.this, "All Done!", Toast.LENGTH_LONG).show();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -155,6 +190,10 @@ public class UploadAudioActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 audioUri = data.getData();
             }
+        }
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK){
+            imgUri = data.getData();
+            cover.setImageURI(imgUri);
         }
     }
 }

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(MainActivity.this, AudioPlayerActivity.class);
-                        intent.putExtra("postID", post_key);
+                        //intent.putExtra("postID", post_key);
                         startActivity(intent);
                     }
                 });

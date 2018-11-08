@@ -21,7 +21,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
         post_title.setText(title);
     }
 
-    public void setCover(Context ctx, String imageUrl){
+    public void setCover(Context ctx, int imageUrl){
         ImageView post_image = mView.findViewById(R.id.cover);
         Picasso.with(ctx).load(imageUrl).into(post_image);
     }

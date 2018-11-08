@@ -5,10 +5,11 @@ public class Item {
     public Item() {
     }
 
-    String label, cover;
+    String label;
+    int cover;
     int audio;
 
-    public Item (String cover, String label, int audio) {
+    public Item (int cover, String label, int audio) {
 
     this.cover = cover;
     this.label = label;
@@ -16,9 +17,13 @@ public class Item {
 
     }
 
-    public String getCover() { return cover; }
+    public int getCover() {
+        return cover;
+    }
 
-    public void setCover(String cover) { this.cover = cover; }
+    public void setCover(int cover) {
+        this.cover = cover;
+    }
 
     public String getLabel() {
         return label;

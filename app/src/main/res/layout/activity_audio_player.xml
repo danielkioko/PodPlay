@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".AudioPlayerActivity">
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -19,28 +19,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher" />
+        app:riv_corner_radius="20dp"
+        app:srcCompat="@drawable/maxresdefault" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fabPause"
+        app:layout_constraintTop_toTopOf="@+id/audioLabel"
         app:srcCompat="@android:drawable/ic_media_play" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabPause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/audioLabel"
         app:srcCompat="@android:drawable/ic_media_pause" />
 
     <TextView
@@ -50,9 +51,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorPrimary"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:text="Podcast Title"
+        android:padding="10dp"
         android:textColor="@android:color/background_light"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/cover"
